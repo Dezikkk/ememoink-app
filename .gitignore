@@ -166,3 +166,4 @@ app.*.symbols
 
 *.env
 **/ios/Runner/Info.plist 
+*.old*

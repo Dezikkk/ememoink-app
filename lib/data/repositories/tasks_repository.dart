@@ -9,11 +9,11 @@ class TasksRepository {
   TasksRepository({GoogleAuthRepository? authRepo})
     : _authRepo = authRepo ?? getIt<GoogleAuthRepository>();
 
-  Future<TasksApi?> _getTasksClient() async {
+  Future<TasksApi> _getTasksClient() async {
     final client = await _authRepo.getAuthorizedClient();
     if (client == null) {
       debugPrint('No authorized client, used is not signed in');
-      return null;
+      throw Exception('User not signed in');
     }
     return TasksApi(client);
   }
@@ -21,13 +21,12 @@ class TasksRepository {
   Future<List<TaskList>> getTaskLists() async {
     try {
       final client = await _getTasksClient();
-      if (client == null) return [];
 
       final taskLists = await client.tasklists.list();
       return taskLists.items ?? [];
     } catch (e) {
       debugPrint('Failed fetching task lists: $e');
-      return [];
+      throw Exception(e);
     }
   }
 
@@ -39,7 +38,6 @@ class TasksRepository {
   }) async {
     try {
       final client = await _getTasksClient();
-      if (client == null) return [];
 
       final tasks = await client.tasks.list(
         list,
@@ -51,31 +49,31 @@ class TasksRepository {
       return tasks.items ?? [];
     } catch (e) {
       debugPrint('Failed fetching tasks: $e');
-      return [];
+      throw Exception(e);
     }
   }
 
-  Future<bool> addTask(
+  Future<void> addTask(
     String title, {
     String? notes,
     String taskList = '@default',
   }) async {
     // TODO: mozna dodac date i starowanie taskow
-    if (title.length > 1024) return false;
+    if (title.isEmpty) {
+      throw ArgumentError('Title cannot be empty');
+    }
+    if (title.length > 1024) {
+      throw ArgumentError('Title too long (max 1024 characters)');
+    }
 
     try {
       final client = await _getTasksClient();
-      if (client == null) return false;
-
       final newTask = Task(title: title, notes: notes);
-
       final createdTask = await client.tasks.insert(newTask, taskList);
       debugPrint('Task with ID "${createdTask.id}" was created.');
-
-      return true;
     } catch (e) {
       debugPrint('Failed adding task: $e');
-      return false;
+      throw Exception(e);
     }
   }
 }

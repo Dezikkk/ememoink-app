@@ -9,11 +9,11 @@ class CalendarRepository {
   CalendarRepository({GoogleAuthRepository? authRepo})
     : _authRepo = authRepo ?? getIt<GoogleAuthRepository>();
 
-  Future<CalendarApi?> _getCalendarClient() async {
+  Future<CalendarApi> _getCalendarClient() async {
     final client = await _authRepo.getAuthorizedClient();
     if (client == null) {
       debugPrint('No authorized client, used is not signed in');
-      return null;
+      throw Exception('User not signed in');
     }
     return CalendarApi(client);
   }
@@ -23,7 +23,6 @@ class CalendarRepository {
     int maxResults = 10,
   }) async {
     final client = await _getCalendarClient();
-    if (client == null) return [];
 
     try {
       final events = await client.events.list(
@@ -36,17 +35,16 @@ class CalendarRepository {
       return events.items ?? [];
     } catch (e) {
       debugPrint('Failed fetching events: $e');
-      return [];
+      throw Exception(e);
     }
   }
 
-  Future<bool> addEvent({
+  Future<void> addEvent({
     required String title,
     required DateTime startTime,
     required DateTime endTime,
   }) async {
     final client = await _getCalendarClient();
-    if (client == null) return false;
 
     final event = Event(
       summary: title,
@@ -56,10 +54,9 @@ class CalendarRepository {
 
     try {
       await client.events.insert(event, 'primary');
-      return true;
     } catch (e) {
       debugPrint('Failed adding event: $e');
-      return false;
+      throw Exception(e);
     }
   }
 }

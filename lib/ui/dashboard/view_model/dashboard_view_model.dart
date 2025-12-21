@@ -19,8 +19,12 @@ class DashboardViewModel extends ChangeNotifier {
   List<Task> tasks = [];
   List<Event> events = [];
 
-  String? tasksError;
-  String? eventsError;
+  String? _tasksError;
+  String? _eventsError;
+  String? get tasksError =>
+      _tasksError?.split('message: ').last.replaceAll(RegExp(r'.$'), '');
+  String? get eventsError =>
+      _eventsError?.split('message: ').last.replaceAll(RegExp(r'.$'), '');
 
   DashboardViewModel({
     TasksRepository? tasksRepository,
@@ -35,7 +39,7 @@ class DashboardViewModel extends ChangeNotifier {
   Future<void> _loadTasks() async {
     if (_disposed) return;
     _isLoadingTasks = true;
-    tasksError = null;
+    _tasksError = null;
     notifyListeners();
 
     try {
@@ -44,8 +48,8 @@ class DashboardViewModel extends ChangeNotifier {
       tasks = result;
     } catch (e) {
       if (_disposed) return;
-      tasksError = 'Failed loading tasks: $e';
-      debugPrint('Failed loading tasks: $e');
+      tasks = [];
+      _tasksError = '$e';
     } finally {
       if (!_disposed) {
         _isLoadingTasks = false;
@@ -57,7 +61,7 @@ class DashboardViewModel extends ChangeNotifier {
   Future<void> _loadEvents() async {
     if (_disposed) return;
     _isLoadingEvents = true;
-    eventsError = null;
+    _eventsError = null;
     notifyListeners();
 
     try {
@@ -65,9 +69,9 @@ class DashboardViewModel extends ChangeNotifier {
       if (_disposed) return;
       events = result;
     } catch (e) {
+      events = [];
       if (_disposed) return;
-      eventsError = 'Failed loading events: $e';
-      debugPrint('Failed loading events: $e');
+      _eventsError = '$e';
     } finally {
       if (!_disposed) {
         _isLoadingEvents = false;
