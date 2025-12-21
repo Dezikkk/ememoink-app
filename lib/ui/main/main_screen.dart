@@ -1,0 +1,42 @@
+import 'package:ememoink/ui/calendar/calendar_screen.dart';
+import 'package:ememoink/ui/core/ui/shared_widgets/auth_app_bar.dart';
+import 'package:ememoink/ui/dashboard/dashboard_screen.dart';
+import 'package:ememoink/ui/main/widgets/navigation.dart';
+import 'package:ememoink/ui/settings/settings_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'package:ememoink/ui/main/view_model/main_view_model.dart';
+
+class MainScreen extends StatelessWidget {
+  const MainScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => MainViewModel(),
+      child: const _MainScreenContent(),
+    );
+  }
+}
+
+class _MainScreenContent extends StatelessWidget {
+  const _MainScreenContent();
+
+  static const List<Widget> _pages = [
+    DashboardScreen(),
+    CalendarScreen(),
+    SettingsScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final viewModel = context.watch<MainViewModel>();
+
+    return Scaffold(
+      appBar: AuthAppBar(title: 'eMemo.ink'),
+      body: _pages[viewModel.currentPageIndex],
+      bottomNavigationBar: buildNavigation(context, viewModel),
+    );
+  }
+}

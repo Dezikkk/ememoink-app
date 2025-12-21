@@ -1,0 +1,56 @@
+import 'package:ememoink/ui/core/ui/shared_widgets/section_header.dart';
+import 'package:ememoink/ui/dashboard/view_model/dashboard_view_model.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class DashboardScreen extends StatelessWidget {
+  const DashboardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => DashboardViewModel(),
+      child: const _DashboardContent(),
+    );
+  }
+}
+
+class _DashboardContent extends StatelessWidget {
+  const _DashboardContent();
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            buildSectionHeader(context, 'Upcomming events'),
+            Container(
+              padding: EdgeInsets.all(16),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerLow,
+                borderRadius: BorderRadius.all(Radius.circular(8.0)),
+              ),
+              child: Column(
+                children: [
+                  Row(children: [Text('example')]),
+                  Divider(),
+                  Row(children: [Text('example')]),
+                  Divider(),
+                  Row(children: [Text('example')]),
+                  Divider(),
+                  Row(children: [Text('example')]),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
