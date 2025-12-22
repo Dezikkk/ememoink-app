@@ -26,6 +26,7 @@ class _DashboardContent extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: () => context.read<DashboardViewModel>().loadAll(),
       child: CustomScrollView(
+        physics: BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics()),
         slivers: [
           DashboardCarouselView(),
           DashboardCarouselIndicator(),
@@ -63,17 +64,12 @@ enum CarouselCardInfo {
     subtitle: '3 events this week',
     icon: Icons.event,
   ),
-  deviceinfo(
-    title: 'Device info',
-    subtitle: 'battery 4%',
-    icon: Icons.event,
-  );
+  deviceinfo(title: 'Device info', subtitle: 'battery 4%', icon: Icons.event);
 
   const CarouselCardInfo({
     required this.title,
     required this.subtitle,
     required this.icon,
-
   });
 
   final String title;

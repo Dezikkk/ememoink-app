@@ -1,3 +1,4 @@
+import 'package:ememoink/ui/core/ui/shared_widgets/event_date_icon.dart';
 import 'package:ememoink/ui/dashboard/dashboard_screen.dart';
 import 'package:ememoink/ui/dashboard/view_model/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
@@ -25,17 +26,10 @@ class DashboardSection extends StatelessWidget {
         final error = _getError(vm);
 
         //loading state
-        if (vm.isLoading) {
-          return SliverFillRemaining(
-            child: Center(child: CircularProgressIndicator()),
-          );
-        }
+        if (vm.isLoading) return SliverToBoxAdapter();
 
-        // error i empty state
-
-        // succes state
+        // normal state
         final displayedItems = items.take(maxItems).toList();
-
         return SliverPadding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
           sliver: DecoratedSliver(
@@ -53,9 +47,11 @@ class DashboardSection extends StatelessWidget {
 
                 if (items.isEmpty) {
                   if (error != null) {
-                    return _buildErrorItem(theme, error);
+                    // error state
+                    return _buildErrorItem(error);
                   }
-                  return _buildEmptyItem(theme);
+                  // empty state
+                  return _buildEmptyItem();
                 }
                 // see more tile
                 // TODO: zdecyduj czy to zostawic czy wywalic(chyba wywalic)
@@ -65,7 +61,7 @@ class DashboardSection extends StatelessWidget {
 
                 // tasks
                 final itemIndex = index - 1;
-                return _buildItem(theme, displayedItems[itemIndex]);
+                return _buildItem(context, displayedItems[itemIndex]);
               },
               separatorBuilder: (_, index) {
                 if (index == 0 || index == displayedItems.length + 1) {
@@ -96,6 +92,21 @@ class DashboardSection extends StatelessWidget {
         : vm.eventsError;
   }
 
+  String _formatTime(DateTime dateTime) {
+    final hour = dateTime.hour;
+    final minute = dateTime.minute.toString().padLeft(2, '0');
+
+    if (hour < 10) {
+      return '$hour:$minute  ';
+    }
+    return '$hour:$minute';
+  }
+
+  bool _shouldShowEndTime(DateTime? start, DateTime? end) {
+    if (start == null || end == null) return false;
+    return end.difference(start).inMinutes > 0;
+  }
+
   Widget _buildHeader(ThemeData theme) {
     return GestureDetector(
       onTap: () => {},
@@ -119,7 +130,7 @@ class DashboardSection extends StatelessWidget {
     );
   }
 
-  Widget _buildItem(ThemeData theme, dynamic item) {
+  Widget _buildItem(BuildContext context, dynamic item) {
     switch (sectionType) {
       case DashboardSectionType.tasks:
         //Tasks
@@ -135,17 +146,57 @@ class DashboardSection extends StatelessWidget {
 
       case DashboardSectionType.events:
         final event = item as Event;
+        final start = event.start?.dateTime ?? event.start?.date;
+        final end = event.end?.dateTime ?? event.end?.date;
 
         return ListTile(
           minTileHeight: 72,
-          leading: sectionType.icon,
+          leading: EventDateIcon(event: event),
           title: Text(event.summary ?? 'Untitled event'),
-          // onTap: () {},
+
+          trailing: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              if (start != null)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.access_time, size: 16),
+                    SizedBox(width: 4),
+                    Text(
+                      _formatTime(start),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontFeatures: [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                  ],
+                ),
+              if (end != null && _shouldShowEndTime(start, end))
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.arrow_forward, size: 16),
+                    SizedBox(width: 4),
+                    Text(
+                      _formatTime(end),
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontFeatures: [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
         );
+      // onTap: () {},
     }
   }
 
-  Widget _buildEmptyItem(ThemeData theme) {
+  Widget _buildEmptyItem() {
     return ListTile(
       minTileHeight: 72,
       leading: const Icon(Icons.error),
@@ -156,7 +207,7 @@ class DashboardSection extends StatelessWidget {
     );
   }
 
-  Widget _buildErrorItem(ThemeData theme, String error) {
+  Widget _buildErrorItem(String error) {
     return ListTile(
       minTileHeight: 72,
       leading: const Icon(Icons.error),

@@ -16,22 +16,30 @@ class DashboardCarouselView extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(maxHeight: 200),
           child: Consumer<DashboardViewModel>(
-            builder: (context, vm, child) => CarouselSlider.builder(
-              carouselController: vm.carouselController,
-              options: CarouselOptions(
-                autoPlay: true,
-                autoPlayInterval: const Duration(seconds: 15),
-                autoPlayAnimationDuration: const Duration(seconds: 2),
-                enlargeCenterPage: true,
-                onPageChanged: (index, reason) {
-                  vm.currentPage = index;
+            builder: (context, vm, child) {
+              if (vm.isLoading) {
+                return SizedBox();
+              }
+
+              return CarouselSlider.builder(
+                carouselController: vm.carouselController,
+                options: CarouselOptions(
+                  autoPlay: true,
+                  autoPlayInterval: const Duration(seconds: 15),
+                  autoPlayAnimationDuration: const Duration(seconds: 2),
+                  enlargeCenterPage: true,
+                  onPageChanged: (index, reason) {
+                    vm.currentPage = index;
+                  },
+                ),
+                itemCount: CarouselCardInfo.values.length,
+                itemBuilder: (context, index, realIndex) {
+                  return DashboardCarouselCard(
+                    cardInfo: CarouselCardInfo.values[index],
+                  );
                 },
-              ),
-              itemCount: CarouselCardInfo.values.length,
-              itemBuilder: (context, index, realIndex) {
-                return DashboardCarouselCard(cardInfo: CarouselCardInfo.values[index]);
-              },
-            ),
+              );
+            },
           ),
         ),
       ),

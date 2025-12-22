@@ -4,6 +4,7 @@ import 'package:ememoink/ui/main/widgets/auth_app_bar.dart';
 import 'package:ememoink/ui/dashboard/dashboard_screen.dart';
 import 'package:ememoink/ui/main/widgets/navigation.dart';
 import 'package:ememoink/ui/settings/settings_screen.dart';
+import 'package:ememoink/ui/tasks/tasks_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -26,8 +27,9 @@ class _MainScreenContent extends StatelessWidget {
 
   static const List<Widget> _pages = [
     DashboardScreen(),
+    TasksScreen(),
     CalendarScreen(),
-    ColorSchemeTest(),
+    // ColorSchemeTest(),
     SettingsScreen(),
   ];
 
