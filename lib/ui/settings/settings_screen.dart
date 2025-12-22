@@ -37,15 +37,15 @@ class _SettingsScreenContent extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             buildSectionHeader(context: context, title: 'App Settings'),
-            buildAsTiles(context, themeViewModel),
+            SettingsAsTiles(),
 
             buildSectionHeader(context: context, title: 'Device & Display'),
-            buildDndTiles(context),
+            SettingsDndTiles(),
 
             buildSectionHeader(context: context, title: 'System & Updates'),
-            buildSnuTiles(context),
+            SettingsSnuTiles(),
 
-            buildFooter(context),
+            SettingsFooter(),
 
             ElevatedButton(
               onPressed: () async {
