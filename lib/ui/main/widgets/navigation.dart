@@ -18,7 +18,7 @@ Widget buildNavigation(BuildContext context, MainViewModel viewModel) {
       ),
       NavigationDestination(
         icon: Badge(child: Icon(Icons.color_lens)),
-        label: 'Color scheme test',
+        label: 'Color scheme',
       ),
       NavigationDestination(
         icon: Badge(label: Text('test'), child: Icon(Icons.settings)),

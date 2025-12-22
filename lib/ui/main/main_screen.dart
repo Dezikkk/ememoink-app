@@ -1,6 +1,6 @@
 import 'package:ememoink/ui/calendar/calendar_screen.dart';
 import 'package:ememoink/ui/colorscheme_test/colorscheme_test.dart';
-import 'package:ememoink/ui/core/ui/shared_widgets/auth_app_bar.dart';
+import 'package:ememoink/ui/main/widgets/auth_app_bar.dart';
 import 'package:ememoink/ui/dashboard/dashboard_screen.dart';
 import 'package:ememoink/ui/main/widgets/navigation.dart';
 import 'package:ememoink/ui/settings/settings_screen.dart';
@@ -36,7 +36,7 @@ class _MainScreenContent extends StatelessWidget {
     final viewModel = context.watch<MainViewModel>();
 
     return Scaffold(
-      appBar: AuthAppBar(title: 'eMemo.ink'),
+      appBar: AuthAppBar(),
       body: _pages[viewModel.currentPageIndex],
       bottomNavigationBar: buildNavigation(context, viewModel),
     );
