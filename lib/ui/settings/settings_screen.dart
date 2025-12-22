@@ -1,14 +1,15 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
 import 'package:ememoink/config/di.dart';
+import 'view_model/settings_view_model.dart';
 import 'package:ememoink/data/services/onboarding_service.dart';
+
+import 'package:ememoink/ui/core/ui/shared_widgets/section_header.dart';
 import 'package:ememoink/ui/settings/widgets/as_tiles.dart';
 import 'package:ememoink/ui/settings/widgets/dnd_tiles.dart';
 import 'package:ememoink/ui/settings/widgets/footer.dart';
 import 'package:ememoink/ui/settings/widgets/snu_tiles.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'view_model/settings_view_model.dart';
-import '../core/view_model/theme_view_model.dart';
-import '../core/ui/shared_widgets/section_header.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -27,9 +28,6 @@ class _SettingsScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeViewModel = context.watch<ThemeViewModel>();
-    // final settingsViewModel = context.watch<SettingsViewModel>();
-
     return SingleChildScrollView(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 0),

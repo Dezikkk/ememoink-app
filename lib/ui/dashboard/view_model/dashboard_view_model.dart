@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:ememoink/config/di.dart';
 
@@ -11,6 +12,18 @@ class DashboardViewModel extends ChangeNotifier {
   final TasksRepository _tasksRepo;
   final CalendarRepository _calendarRepo;
   bool _disposed = false;
+
+  int _currentPage = 0;
+  int get currentPage => _currentPage;
+  set currentPage(int value) {
+    if (_currentPage != value) {
+      _currentPage = value;
+      notifyListeners();
+    }
+  }
+
+  final CarouselSliderController carouselController =
+      CarouselSliderController();
 
   bool _isLoadingTasks = false;
   bool _isLoadingEvents = false;

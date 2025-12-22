@@ -1,19 +1,16 @@
+import 'package:ememoink/ui/dashboard/dashboard_screen.dart';
 import 'package:ememoink/ui/dashboard/view_model/dashboard_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis/tasks/v1.dart';
 import 'package:provider/provider.dart';
 
-enum DashboardSectionType { tasks, events }
-
 class DashboardSection extends StatelessWidget {
-  final String title;
   final DashboardSectionType sectionType;
   final int maxItems;
 
   const DashboardSection({
     super.key,
-    required this.title,
     required this.sectionType,
     required this.maxItems,
   });
@@ -108,7 +105,7 @@ class DashboardSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              title,
+              sectionType.title,
               style: TextStyle(
                 color: theme.colorScheme.primary,
                 fontSize: 16,
@@ -130,7 +127,7 @@ class DashboardSection extends StatelessWidget {
 
         return ListTile(
           minTileHeight: 72,
-          leading: const Icon(Icons.task_alt),
+          leading: sectionType.icon,
           title: Text(task.title ?? 'Untitled task'),
           subtitle: task.notes?.isNotEmpty == true ? Text(task.notes!) : null,
           // onTap: () {},
@@ -141,7 +138,7 @@ class DashboardSection extends StatelessWidget {
 
         return ListTile(
           minTileHeight: 72,
-          leading: const Icon(Icons.event),
+          leading: sectionType.icon,
           title: Text(event.summary ?? 'Untitled event'),
           // onTap: () {},
         );
