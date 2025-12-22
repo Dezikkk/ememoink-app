@@ -17,6 +17,10 @@ Widget buildNavigation(BuildContext context, MainViewModel viewModel) {
         label: 'Calendar',
       ),
       NavigationDestination(
+        icon: Badge(child: Icon(Icons.color_lens)),
+        label: 'Color scheme test',
+      ),
+      NavigationDestination(
         icon: Badge(label: Text('test'), child: Icon(Icons.settings)),
         label: 'Settings',
       ),
