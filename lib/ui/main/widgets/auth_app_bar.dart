@@ -34,13 +34,16 @@ class AuthAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                   const SizedBox(width: 12),
                   Flexible(
-                    child: Text(
-                      vm.userName ?? 'User',
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w400,
-                        letterSpacing: 0.5,
+                    child: RichText(
+                      text: TextSpan(
+                        text: 'Hello, ',
+                        children: <TextSpan>[
+                          TextSpan(
+                            text: '${vm.userName ?? 'User'}!',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   Icon(

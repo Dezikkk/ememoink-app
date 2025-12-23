@@ -1,22 +1,18 @@
-import 'package:ememoink/ui/onboarding/view_model/onboarding_view_model.dart';
 import 'package:ememoink/ui/onboarding/widgets/continue_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class BuildFirstPageContent extends StatelessWidget {
   const BuildFirstPageContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = context.watch<OnboardingViewModel>();
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         const Spacer(flex: 4),
         _buildTextContent(context),
         const Spacer(flex: 1),
-        buildContinueButton(context: context, viewModel: viewModel),
+        buildContinueButton(context),
       ],
     );
   }

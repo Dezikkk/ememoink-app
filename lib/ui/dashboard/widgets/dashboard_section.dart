@@ -1,6 +1,7 @@
 import 'package:ememoink/ui/core/ui/shared_widgets/event_date_icon.dart';
 import 'package:ememoink/ui/dashboard/dashboard_screen.dart';
 import 'package:ememoink/ui/dashboard/view_model/dashboard_view_model.dart';
+import 'package:ememoink/ui/main/view_model/main_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:googleapis/calendar/v3.dart';
 import 'package:googleapis/tasks/v1.dart';
@@ -22,8 +23,8 @@ class DashboardSection extends StatelessWidget {
 
     return Consumer<DashboardViewModel>(
       builder: (context, vm, _) {
-        final items = _getItems(vm);
-        final error = _getError(vm);
+        final items = _getItems(context);
+        final error = _getError(context);
 
         //loading state
         if (vm.isLoading) return SliverToBoxAdapter();
@@ -42,7 +43,7 @@ class DashboardSection extends StatelessWidget {
               itemBuilder: (context, index) {
                 // title tile
                 if (index == 0) {
-                  return _buildHeader(theme);
+                  return _buildHeader(context, sectionType);
                 }
 
                 if (items.isEmpty) {
@@ -54,7 +55,7 @@ class DashboardSection extends StatelessWidget {
                   return _buildEmptyItem();
                 }
                 // see more tile
-                // TODO: zdecyduj czy to zostawic czy wywalic(chyba wywalic)
+                // TODO: decide whether to leave it or delete it (probably delete it) (not showing rn)
                 if (index == displayedItems.length + 1) {
                   return Text('See more');
                 }
@@ -82,11 +83,15 @@ class DashboardSection extends StatelessWidget {
     );
   }
 
-  List<dynamic> _getItems(DashboardViewModel vm) {
+  List<dynamic> _getItems(BuildContext context) {
+    final vm = context.read<DashboardViewModel>();
+
     return sectionType == DashboardSectionType.tasks ? vm.tasks : vm.events;
   }
 
-  String? _getError(DashboardViewModel vm) {
+  String? _getError(BuildContext context) {
+    final vm = context.read<DashboardViewModel>();
+
     return sectionType == DashboardSectionType.tasks
         ? vm.tasksError
         : vm.eventsError;
@@ -107,9 +112,15 @@ class DashboardSection extends StatelessWidget {
     return end.difference(start).inMinutes > 0;
   }
 
-  Widget _buildHeader(ThemeData theme) {
+  Widget _buildHeader(BuildContext context, DashboardSectionType sectionType) {
+    final theme = Theme.of(context);
+    final vm = context.watch<MainViewModel>();
+
     return GestureDetector(
-      onTap: () => {},
+      onTap: () => sectionType == DashboardSectionType.tasks
+          ? vm.setPageIndex(1)
+          : vm.setPageIndex(2),
+      behavior: HitTestBehavior.opaque,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
         child: Row(

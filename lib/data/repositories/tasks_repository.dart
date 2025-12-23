@@ -58,7 +58,6 @@ class TasksRepository {
     String? notes,
     String taskList = '@default',
   }) async {
-    // TODO: mozna dodac date i starowanie taskow
     if (title.isEmpty) {
       throw ArgumentError('Title cannot be empty');
     }
@@ -73,6 +72,20 @@ class TasksRepository {
       debugPrint('Task with ID "${createdTask.id}" was created.');
     } catch (e) {
       debugPrint('Failed adding task: $e');
+      throw Exception(e);
+    }
+  }
+
+  Future<void> deleteTask({
+    required String taskId,
+    String taskList = '@default',
+  }) async {
+    try {
+      final client = await _getTasksClient();
+      await client.tasks.delete(taskList, taskId);
+      debugPrint('Task with ID "$taskId" was removed.');
+    } catch (e) {
+      debugPrint('Failed removing task: $e');
       throw Exception(e);
     }
   }

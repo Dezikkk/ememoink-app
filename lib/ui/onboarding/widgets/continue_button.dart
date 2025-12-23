@@ -1,18 +1,18 @@
 import 'package:ememoink/ui/onboarding/view_model/onboarding_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-Widget buildContinueButton({
-  required BuildContext context,
-  required OnboardingViewModel viewModel,
-}) {
+Widget buildContinueButton(BuildContext context) {
+  final vm = context.read<OnboardingViewModel>();
+
   return Column(
     children: [
       Row(
         children: [
-          if (!viewModel.isFirstPage && !viewModel.isLastPage) ...[
+          if (!vm.isFirstPage && !vm.isLastPage) ...[
             FilledButton(
               onPressed: () {
-                viewModel.skipToEnd();
+                vm.skipToEnd();
               },
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
@@ -34,7 +34,7 @@ Widget buildContinueButton({
           Expanded(
             child: FilledButton(
               onPressed: () {
-                viewModel.nextPage(context);
+                vm.nextPage(context);
               },
               style: FilledButton.styleFrom(
                 padding: const EdgeInsets.symmetric(
@@ -44,7 +44,7 @@ Widget buildContinueButton({
               ),
               child: Center(
                 child: Text(
-                  viewModel.isLastPage ? 'Get Started' : 'Next',
+                  vm.isLastPage ? 'Get Started' : 'Next',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
               ),

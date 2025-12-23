@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:ememoink/ui/main/view_model/main_view_model.dart';
+import 'package:provider/provider.dart';
 
-Widget buildNavigation(BuildContext context, MainViewModel viewModel) {
+Widget buildNavigation(BuildContext context) {
+  final vm = context.read<MainViewModel>();
+
   return NavigationBar(
-    selectedIndex: viewModel.currentPageIndex,
-    onDestinationSelected: viewModel.setPageIndex,
+    selectedIndex: vm.currentPageIndex,
+    onDestinationSelected: vm.setPageIndex,
     destinations: const [
       NavigationDestination(
         selectedIcon: Icon(Icons.home),

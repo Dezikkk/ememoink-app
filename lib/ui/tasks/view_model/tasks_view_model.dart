@@ -16,6 +16,9 @@ class TasksViewModel extends ChangeNotifier {
   String? get error =>
       _error?.split('message: ').last.replaceAll(RegExp(r'.$'), '');
 
+  Set<String> selectedTaskIds = {};
+  int get selectedCount => selectedTaskIds.length;
+
   TasksViewModel({TasksRepository? tasksRepository})
     : _tasksRepo = tasksRepository ?? getIt<TasksRepository>();
 
@@ -26,7 +29,7 @@ class TasksViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await _tasksRepo.getTasks();
+      final result = await _tasksRepo.getTasks(maxResults: 100);
       if (_disposed) return;
       tasks = result;
     } catch (e) {
@@ -39,6 +42,69 @@ class TasksViewModel extends ChangeNotifier {
         notifyListeners();
       }
     }
+  }
+
+  Future<void> deleteTask(String taskId) async {
+    if (_disposed) return;
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await _tasksRepo.deleteTask(taskId: taskId);
+    } catch (e) {
+      if (_disposed) return;
+      await loadTasks();
+      _error = '$e';
+    } finally {
+      if (!_disposed) {
+        _isLoading = false;
+        await loadTasks();
+        notifyListeners();
+      }
+    }
+  }
+
+  Future<void> deleteTasksById() async {
+    if (_disposed) return;
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      await Future.wait(
+        selectedTaskIds.map((taskId) => _tasksRepo.deleteTask(taskId: taskId)),
+      );
+    } catch (e) {
+      if (_disposed) return;
+      await loadTasks();
+      _error = '$e';
+    } finally {
+      if (!_disposed) {
+        _isLoading = false;
+        clearSelection();
+        await loadTasks();
+        notifyListeners();
+      }
+    }
+  }
+
+  bool isTaskSelected(String taskId) {
+    return selectedTaskIds.contains(taskId);
+  }
+
+  void toggleTaskSelection(String taskId) {
+    if (selectedTaskIds.contains(taskId)) {
+      selectedTaskIds.remove(taskId);
+    } else {
+      selectedTaskIds.add(taskId);
+    }
+    notifyListeners();
+  }
+
+  void clearSelection() {
+    selectedTaskIds.clear();
+    notifyListeners();
   }
 
   @override
